@@ -1,0 +1,67 @@
+
+# --------------------------- runtime ----------------------------
+log:
+  summary_interval: 1
+  validation_interval: 1
+  save_latest_k: 5
+  milestone_ckp: []
+
+exp_name: unet
+gpus: [3,6]
+
+# --------------------------- train ----------------------------
+train:
+  num_epochs: 20
+  num_workers: 4
+  batch_size: 4
+  optimizer: 'adam' 
+  lr_scheduler: 'step' # zzh
+  resume: ~
+  resume_conf: [epoch, optimizer] # zzh
+
+# --------------------------- test ----------------------------
+test:
+    status: 'test' # 'test' | simuexp | 'realexp'
+    save_img: True # whether save the input and output image
+    checkpoint: 'work_dir/unet/train/2023-11-15_23-03-08/ckpt/model_latest.pth'
+
+# --------------------------- model ----------------------------
+model:
+  name: UNet
+  in_nc: 3
+  out_nc: 3
+
+loss: 
+  loss_conf: {'l1_loss':0.4, 'mse_loss':0.2, 'ssim_loss':0.2, 'tv_loss':0.2}
+
+optim:
+  name: 'Adam'
+  lr: 0.0001
+
+lr_scheduler:
+  name: 'StepLR'
+  step_size: 10
+  gamma: 0.5
+
+metrics: 
+  met_name: ['psnr', 'ssim']
+  calc_mean: True
+
+# --------------------------- data ----------------------------
+train_dataset:
+  data_dir: 'data/train/Kodak24/'
+  tform: ['all']
+  sigma: 0.2
+
+train_dataloader:
+  val: 0.1
+  batch_size: 4
+  num_workers: 4
+
+test_dataset:
+  data_dir: 'data/train/Kodak24/'
+  sigma: 0.05
+
+test_dataloader:
+  batch_size: 4
+  num_workers: 4
