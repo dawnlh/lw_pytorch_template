@@ -27,7 +27,7 @@ def train(rank, cfg):
     lr_scheduler = build_sched(**cfg.lr_scheduler, optimizer=optim)
 
     ## data
-    train_dataset = build_dataset(cfg.train_dataset, status='train')
+    train_dataset = build_dataset(cfg.train_dataset)
     train_dataloader, val_dataloader = build_dataloader(status='train', dataset=train_dataset, val=cfg.train_dataloader.val,
                                         batch_size=cfg.train_dataloader.batch_size, num_workers=cfg.train_dataloader.num_workers, is_distributed=(cfg.num_gpus > 1))
     ## loss & metrics
@@ -97,7 +97,7 @@ def train(rank, cfg):
             # metrics           
             if step % cfg.log.summary_interval == 0:
                 iter_metrics = {}
-                calc_metrics = metrics(output, img_target)
+                calc_metrics = metrics(torch.clip(output,0,1), img_target)
                 calc_metrics.update({'loss': loss})
 
                 for k, v in calc_metrics.items():
@@ -151,7 +151,7 @@ def valid(model, val_dataloader, criterion, device, metrics, epoch, logger=None,
             # loss calc
             loss = criterion(output, img_target)
             # metrics
-            calc_metrics = metrics(output, img_target)
+            calc_metrics = metrics(torch.clip(output,0,1), img_target)
             calc_metrics.update({'loss': loss})
 
             # average metric between processes

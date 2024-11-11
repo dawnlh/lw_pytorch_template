@@ -1,5 +1,6 @@
 import torch
 import inspect
+
 # ============================
 # build optimizer & lr_scheduler
 # ============================
@@ -14,10 +15,8 @@ for module_name in dir(torch.optim):
         OPTIMS.update({module_name:_optim})
 
 for module_name in dir(torch.optim.lr_scheduler):
-    if module_name.startswith('__'):
-        continue
-    _sched = getattr(torch.optim.lr_scheduler, module_name)
-    if inspect.isclass(_sched) and issubclass(_sched, torch.optim.lr_scheduler._LRScheduler):
+    if module_name in torch.optim.lr_scheduler.__all__:
+        _sched = getattr(torch.optim.lr_scheduler, module_name)
         SCHEDS.update({module_name: _sched})
 
 
@@ -28,7 +27,7 @@ def build_optim(name, *args, **kwargs):
     if name in OPTIMS:
         return OPTIMS.get(name)(*args, **kwargs)
     else:
-        raise NotImplementedError
+        raise NotImplementedError(f'{name} is not implemented in the OPTIMS list')
 
 
 def build_sched(name, *args, **kwargs):
@@ -38,4 +37,4 @@ def build_sched(name, *args, **kwargs):
     if name in SCHEDS:
         return SCHEDS.get(name)(*args, **kwargs)
     else:
-        raise NotImplementedError
+        raise NotImplementedError(f'{name} is not implemented in the SCHEDS list')

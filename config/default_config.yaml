@@ -7,7 +7,7 @@ log:
   milestone_ckp: []
 
 exp_name: unet
-gpus: [3,6]
+gpus: [0]
 
 # --------------------------- train ----------------------------
 train:
@@ -49,6 +49,8 @@ metrics:
 
 # --------------------------- data ----------------------------
 train_dataset:
+  name: NoisyImg
+  status: train
   data_dir: 'data/train/Kodak24/'
   tform: ['all']
   sigma: 0.2
@@ -59,6 +61,8 @@ train_dataloader:
   num_workers: 4
 
 test_dataset:
+  name: NoisyImg
+  status: test
   data_dir: 'data/train/Kodak24/'
   sigma: 0.05
 

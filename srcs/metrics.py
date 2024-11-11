@@ -1,7 +1,17 @@
-
 import torch
 import pyiqa  # pip install pyiqa
 import torch.nn as nn
+
+# ===========================
+# build metric
+# ===========================
+
+def build_metrics(met_name, calc_mean):
+    return IQA_Metric(metric_names=met_name, calc_mean=calc_mean)
+
+# ===========================
+# metrics
+# ===========================
 
 class IQA_Metric(nn.Module):
     """image quality assessment metric calculation using [pyiqa package](https://github.com/chaofengc/IQA-PyTorch)
@@ -15,8 +25,7 @@ class IQA_Metric(nn.Module):
         self.__names__ = metric_names
         self.metrics = {}
         for met_name in metric_names:
-            self.metrics.update(
-                {met_name: pyiqa.create_metric(metric_name=met_name)})
+            self.metrics.update({met_name: pyiqa.create_metric(metric_name=met_name)})
         self.calc_mean = calc_mean
 
     def forward(self, output, target):
@@ -31,6 +40,3 @@ class IQA_Metric(nn.Module):
             return metric_scores_mean
         else:
             return metric_scores
-
-def build_metrics(met_name, calc_mean):
-    return IQA_Metric(metric_names=met_name, calc_mean=calc_mean)

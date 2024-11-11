@@ -10,7 +10,7 @@ def build_model(name, *args, **kwargs):
     if name in MODELS:
         return MODELS.get(name)(*args, **kwargs)
     else:
-        raise NotImplementedError
+        raise NotImplementedError(f'{name} is not implemented in the MODELS list')
 
 MODELS = {}
 

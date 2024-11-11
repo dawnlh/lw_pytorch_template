@@ -14,7 +14,7 @@ def test(cfg):
     model = build_model(**cfg.model)
 
     ## data
-    test_dataset = build_dataset(cfg.test_dataset, status=cfg.test.status)
+    test_dataset = build_dataset(cfg.test_dataset)
     test_dataloader = build_dataloader(status=cfg.test.status, dataset=test_dataset, batch_size=cfg.test_dataloader.batch_size, num_workers=cfg.test_dataloader.num_workers)
 
     ## metrics
@@ -89,4 +89,4 @@ def test(cfg):
             [f'{k}: {v:6.4f}' for k, v in test_metrics.items()])
 
         logger.info(
-            '='*80 + f'\n🎯 time/sample {time_cost/n_samples:6.4f} ' + metrics_str + '\n' + '='*80)
+            '='*80 + f'\n time/sample {time_cost/n_samples:6.4f} ' + metrics_str + '\n' + '='*80)
